@@ -1,0 +1,14 @@
+.article {
+    display: flex;
+    padding: 10px 15px;
+    border-bottom: 2px solid #eee;
+}
+
+.article > div{
+    padding-right: 10px;
+}
+
+.article p {
+    line-height: 1.3125;
+    margin: 0;
+}

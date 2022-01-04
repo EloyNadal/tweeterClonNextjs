@@ -1,0 +1,37 @@
+.header, .nav {
+    height: 49px;
+    position: sticky;
+    display: flex;
+    align-items: center;
+}
+
+.header {
+    top: 0;
+    border-bottom: 1px solid #eee;
+}
+
+.header > div{
+    margin-left: 15px;
+}
+
+.header h2 {
+    margin: 0;
+    margin-left: 15px;
+}
+
+.nav {
+    bottom: 0;
+    border-top: 1px solid #eee;
+}
+
+.section {
+    padding-top: 10px;
+    height: calc(100vh - calc(49px * 2));
+    overflow: auto;
+}
+
+@media (min-width: 500px) {
+    .section {
+      height: calc(90vh - calc(49px * 2));
+    }
+  }

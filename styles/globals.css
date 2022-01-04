@@ -1,16 +1,59 @@
+:root {
+    --color-primary: #1c5480;
+    --color-secondary: #0099ff;
+    --color-background: #0099ff33;
+    --color-black: #000;
+    --color-white: #fff;
+    --fonts-base: system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
 html,
 body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    background-image: radial-gradient(var(--color-background) 1px, transparent 1px), radial-gradient(var(--color-background) 1px, transparent 1px);
+    background-position: 0 0, 25px 25px;
+    background-size: 50px 50px;
+    padding: 0;
+    margin: 0;
+    font-family: var(--fonts-base);
 }
 
 a {
-  color: inherit;
-  text-decoration: none;
+    color: inherit;
+    text-decoration: none;
+}
+
+.layout {
+    display: grid;
+    height: 100vh;
+    place-items: center;
+}
+
+main {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+textarea,
+input {
+    border: 0;
+    font-family: var(--fonts-base);
+    padding: 15px;
+    resize: none;
+    width: 100%;
+    outline: 0;
 }
 
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+@media (min-width: 500px) {
+    main {
+        width: 500px;
+        height: 90vh;
+    }
 }
