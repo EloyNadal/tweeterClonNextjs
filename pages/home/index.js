@@ -4,6 +4,11 @@ import { useEffect, useState } from 'react';
 import Devit from 'components/Devit';
 import Avatar from 'components/Avatar';
 import useUser from 'hooks/useUser';
+import { fetchLatestDevits } from 'services/firebase/client';
+import Link from 'next/link';
+import Create from 'components/Icons/Create';
+import Home from 'components/Icons/Home';
+import Search from 'components/Icons/Search';
 
 export default function HomePage() {
 
@@ -12,8 +17,7 @@ export default function HomePage() {
 
     useEffect(() => {
         user && 
-        fetch('http://localhost:3000/api/statuses/home_timeline')
-            .then(res => res.json())
+        fetchLatestDevits()
             .then(setTimline)
     }, [user])
 
@@ -31,13 +35,30 @@ export default function HomePage() {
             <section className={styles.section}>
                 {timeline.map(devit => <Devit 
                    key={devit.id}
-                   username={devit.username}
+                   userName={devit.userName}
                    avatar={devit.avatar}
-                   message={devit.message} />
+                   content={devit.content} 
+                   id={devit.id}
+                   createdAt={devit.createdAt}
+                   img={devit.img}/>
                 )}
             </section>
             <nav className={styles.nav}>
-
+                <Link href="/home">
+                    <a>
+                        <Home width={32} height={32}/>
+                    </a>
+                </Link>
+                <Link href="/compose/tweet">
+                    <a>
+                        <Search width={32} height={32}/>
+                    </a>
+                </Link>
+                <Link href="/compose/tweet">
+                    <a>
+                        <Create width={32} height={32}/>
+                    </a>
+                </Link>
             </nav>
 
 

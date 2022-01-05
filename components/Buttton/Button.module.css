@@ -13,3 +13,8 @@
 .button:hover {
     opacity: .7;
 }
+
+.button[disabled] {
+    pointer-events: none;
+    opacity: 0.2;
+}

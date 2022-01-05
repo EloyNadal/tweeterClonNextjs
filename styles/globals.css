@@ -26,6 +26,7 @@ a {
     display: grid;
     height: 100vh;
     place-items: center;
+    overflow: hidden;
 }
 
 main {
@@ -35,13 +36,19 @@ main {
     height: 100%;
     width: 100%;
     position: relative;
+    overflow-y: auto;
+    display: grid;
+    grid-template-rows: 49px auto 49px;
+}
+
+textarea {
+  min-height: 200px;
 }
 
 textarea,
 input {
     border: 0;
     font-family: var(--fonts-base);
-    padding: 15px;
     resize: none;
     width: 100%;
     outline: 0;

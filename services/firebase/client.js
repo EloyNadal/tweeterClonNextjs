@@ -1,6 +1,9 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps } from "firebase/app";
+import { getFirestore, collection, getDocs, addDoc, Timestamp, query, orderBy } from "firebase/firestore";
 import { getAuth, GithubAuthProvider, signInWithPopup, onAuthStateChanged } from "firebase/auth";
+import { ref, uploadBytes, getStorage, getDownloadURL } from "firebase/storage";
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -17,9 +20,11 @@ const firebaseConfig = {
 // Initialize Firebase
 //solo si no se ha iniciado antes
 const app = !getApps().length && initializeApp(firebaseConfig);
+const db = getFirestore();
 
 const mapUserFromFirebaseAuth = (user) => {
-    const { reloadUserInfo } = user;
+
+    const { reloadUserInfo, uid } = user;
     //console.log({reloadUserInfo});
     const { screenName, photoUrl, displayName } = reloadUserInfo;
     const gitHubUrl = 'https://github.com/';
@@ -28,6 +33,7 @@ const mapUserFromFirebaseAuth = (user) => {
         avatar: photoUrl,
         blog: `${gitHubUrl}${screenName}`,
         userName: displayName,
+        uid
     };
 }
 
@@ -44,7 +50,7 @@ export const currentUser = () => {
 }
 
 export const authStateListener = (onChange) => {
-    
+
     const auth = getAuth();
     return onAuthStateChanged(auth, (user) => {
         if (user) {
@@ -81,3 +87,102 @@ export const loginWithGitHub = () => {
 
         });
 }
+
+export const addDevit = async ({ avatar, content, userId, userName, img }) => {
+
+    try {
+        const docRef = await addDoc(collection(db, 'devists'), {
+            avatar,
+            content,
+            userId,
+            userName,
+            img,
+            createdAt: Timestamp.fromDate(new Date()),
+            likesCount: 0,
+            sharesCount: 0
+        });
+        return docRef.id;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+export const fetchLatestDevits = async () => {
+
+    try {
+
+        const devitRef = collection(db, "devists");
+        const q = query(devitRef, orderBy('createdAt', 'desc'))
+        const querySnapshot = await getDocs(q);
+
+        return querySnapshot.docs.map(doc => {
+            const data = doc.data();
+            const id = doc.id;
+
+            const { createdAt } = data;
+
+            //fecha formateada dd/mm/yyyy
+            /* const intl = new Intl.DateTimeFormat('es-ES');
+            const normalizedCreatedAt = intl.format(new Date(createdAt.toDate())); */
+
+            return {
+                ...data,
+                id,
+                createdAt: +createdAt.toDate(),
+            };
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const uploadImage = (file, onUpload) => {
+
+    const storage = getStorage(getApps()[0]);
+    const storageRef = ref(storage, `/images/${file.name}`);
+
+    const uploadTask = uploadBytes(storageRef, file);
+
+    uploadTask.then((status) => {
+        getDownloadURL(storageRef)
+            .then((url) => {
+                console.log({url})
+                onUpload(url)
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    })
+        .catch((error) => {
+            console.log(error);
+        })
+
+    /* uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+            const progress =
+                Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 1000) / 10;
+
+            console.log(progress);
+        },
+        (error) => {
+            console.log(error);
+        },
+        () => {
+            getDownloadURL(storageRef)
+                .then((url) => {
+                    onUpload(url)
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
+    ); */
+}
+
+/* export const uploadImage = (file) => {
+    const ref = firebase.storage().ref(`images/${file.name}`)
+    const task = ref.put(file)
+    return task
+} */

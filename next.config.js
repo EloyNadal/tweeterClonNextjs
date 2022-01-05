@@ -3,7 +3,8 @@ module.exports = {
   images: {
     domains: [
       'avatars.githubusercontent.com',
-      'pbs.twimg.com'
+      'pbs.twimg.com',
+      'firebasestorage.googleapis.com'
     ]
   }
 }

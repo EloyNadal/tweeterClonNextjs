@@ -4,11 +4,32 @@
     border-bottom: 2px solid #eee;
 }
 
+.article section{
+    flex: 1;
+}
+
 .article > div{
     padding-right: 10px;
+}
+
+.article img{
+    min-width: 49px;
 }
 
 .article p {
     line-height: 1.3125;
     margin: 0;
+}
+
+.article .separator {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.article .timeago {
+    opacity: 0.7;
+}
+
+.article .img {
+    border-radius: 10px;
 }
