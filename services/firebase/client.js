@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps } from "firebase/app";
-import { getFirestore, collection, getDocs, addDoc, Timestamp, query, orderBy } from "firebase/firestore";
+import { getFirestore, collection, getDocs, addDoc, Timestamp, query, orderBy, onSnapshot } from "firebase/firestore";
 import { getAuth, GithubAuthProvider, signInWithPopup, onAuthStateChanged } from "firebase/auth";
 import { ref, uploadBytes, getStorage, getDownloadURL } from "firebase/storage";
 
@@ -8,14 +8,7 @@ import { ref, uploadBytes, getStorage, getDownloadURL } from "firebase/storage";
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyDMMBaIlt6PxBkeOX_aOyELhTMcha9qVgU",
-    authDomain: "next-dev-522e4.firebaseapp.com",
-    projectId: "next-dev-522e4",
-    storageBucket: "next-dev-522e4.appspot.com",
-    messagingSenderId: "556990071506",
-    appId: "1:556990071506:web:57913f04ab59098d38a30b"
-};
+const firebaseConfig = JSON.parse(process.env.NEXT_PUBLIC_FIREBASE_CONFIG);
 
 // Initialize Firebase
 //solo si no se ha iniciado antes
@@ -107,31 +100,50 @@ export const addDevit = async ({ avatar, content, userId, userName, img }) => {
     }
 }
 
+const mapDevitFromFirebaseToDevitObject = (doc) => {
+    const data = doc.data();
+    const id = doc.id;
+
+    const { createdAt } = data;
+
+    //fecha formateada dd/mm/yyyy
+    /* const intl = new Intl.DateTimeFormat('es-ES');
+    const normalizedCreatedAt = intl.format(new Date(createdAt.toDate())); */
+
+    return {
+        ...data,
+        id,
+        createdAt: +createdAt.toDate(),
+    };
+}
+
+
+/**
+ * @todo hacer que reciba un callback y se actualice el 
+ * listado cuando se actualice la bse de datos
+ * @returns 
+ */
+/* export const listenLatestDevits = async () => {
+    try {
+        const devitRef = collection(db, "devists");
+        const q = query(devitRef, orderBy('createdAt', 'desc'))
+        //const querySnapshot = await getDocs(q);
+        const querySnapshot = await onSnapshot(q);
+
+        return querySnapshot.docs.map(mapDevitFromFirebaseToDevitObject)
+    } catch (error) {
+        console.log(error);
+    }
+} */
 
 export const fetchLatestDevits = async () => {
 
     try {
-
         const devitRef = collection(db, "devists");
         const q = query(devitRef, orderBy('createdAt', 'desc'))
         const querySnapshot = await getDocs(q);
 
-        return querySnapshot.docs.map(doc => {
-            const data = doc.data();
-            const id = doc.id;
-
-            const { createdAt } = data;
-
-            //fecha formateada dd/mm/yyyy
-            /* const intl = new Intl.DateTimeFormat('es-ES');
-            const normalizedCreatedAt = intl.format(new Date(createdAt.toDate())); */
-
-            return {
-                ...data,
-                id,
-                createdAt: +createdAt.toDate(),
-            };
-        })
+        return querySnapshot.docs.map(mapDevitFromFirebaseToDevitObject)
     } catch (error) {
         console.log(error);
     }
@@ -147,7 +159,7 @@ export const uploadImage = (file, onUpload) => {
     uploadTask.then((status) => {
         getDownloadURL(storageRef)
             .then((url) => {
-                console.log({url})
+                console.log({ url })
                 onUpload(url)
             })
             .catch((error) => {

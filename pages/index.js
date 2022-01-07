@@ -39,7 +39,6 @@ export default function Home() {
           <div className={styles.btnWrapper}>
 
             {
-              
               user === USER_STATES.NOT_LOGGED &&
               <Button onClick={handleClick}>
                 <GitHub fill='#fff' width={24} height={24} />

@@ -1,5 +1,6 @@
 import Avatar from 'components/Avatar';
 import Button from 'components/Buttton'
+import Nav from 'components/Nav';
 import useUser from 'hooks/useUser';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -105,10 +106,7 @@ export default function ComposeTweet() {
                     </div>
                 </form>
             </section>
-            <nav className={styles.nav}>
-
-            </nav>
-
+            <Nav />
 
         </main>
     )

@@ -1,5 +1,10 @@
-import { useEffect } from "react";
-import { useState } from "react/cjs/react.development";
+import { useEffect, useState } from "react";
+
+let isRelativeTimeFormatSuported = typeof Intl !== "undefined" && Intl.RelativeTimeFormat;
+let isDateTimeFormatSupported = typeof Intl !== "undefined" && Intl.DateTimeFormat;
+//para comprobar compativilidad
+/* isRelativeTimeFormatSuported = false;
+isDateTimeFormatSupported = false; */
 
 const DATE_UNITS = [
     ['day', 86400],
@@ -24,17 +29,51 @@ const getDateDiffs = timestamp => {
 export default function useTimeAgo(timestamp) {
 
     const [timeago, setTimeago] = useState(() => getDateDiffs(timestamp));
-    
+
     useEffect(() => {
-        const timeout = setInterval(() => {
+
+        if (isRelativeTimeFormatSuported) {
+            const timeout = setInterval(() => {
                 const newTimeAgo = getDateDiffs(timestamp);
                 setTimeago(newTimeAgo);
-        }, 1000 * 3600)
+            }, 1000 * 3600)
 
-        return () => clearInterval(timeout);
+            return () => clearInterval(timeout);
+        }
+
     }, [timestamp])
 
+    if (!isRelativeTimeFormatSuported) {
+        return formatDate(timestamp, {language : 'es'});
+    }
+
     const { value, unit } = timeago;
-    const rtf = new Intl.RelativeTimeFormat(navigator.language, { style: "long" })
+    const rtf = new Intl.RelativeTimeFormat('es', { style: "long" })
     return rtf.format(value, unit);
+}
+
+export const formatDate = (timestamp, { language = 'es' } = {}) => {
+    const date = new Date(timestamp);
+
+    if (!isDateTimeFormatSupported) {
+        const options = {
+            weekday: "short",
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+        }
+
+        return date.toLocaleDateString(language, options);
+    }
+
+    const options = {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+    }
+
+    return new Intl.DateTimeFormat(language, options).format(date);
 }
