@@ -1,16 +1,11 @@
-import Avatar from "components/Avatar";
 import Devit from "components/Devit";
-import Nav from "components/Nav";
+import Layout from "components/Layout";
 import useUser, { USER_STATES } from "hooks/useUser";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import { db } from "services/firebase/admin";
-import styles from "styles/pages/DevitPage.module.css";
-useRouter
 
 export default function DevitPage(devit) {
 
-    const user = useUser(USER_STATES.NOT_KNOWN);
     const router = useRouter();
     //const [devit, setDevit] = useState(null);
 
@@ -21,38 +16,24 @@ export default function DevitPage(devit) {
             })
             .catch(err => console.log(err));
     }, []) */
-    
+
     if (router.isFallback) {
         return <p>Loading...</p>
     }
 
     return (
-        <main>
-
-            <header className={styles.header}>
-                {
-                    user && user.avatar &&
-                    <Avatar src={user.avatar} alt={user.userName} sizeW={40} sizeH={40} />
-                }
-                <h2>Inicio</h2>
-            </header>
-
-            
-            <section className={styles.section}>
-                {devit &&
-                    <Devit
-                        key={devit.id}
-                        userName={devit.userName}
-                        avatar={devit.avatar}
-                        content={devit.content}
-                        id={devit.id}
-                        createdAt={devit.createdAt}
-                        img={devit.img} />
-                }
-            </section>
-            <Nav />
-
-        </main>
+        <Layout>
+            {devit &&
+                <Devit
+                    key={devit.id}
+                    userName={devit.userName}
+                    avatar={devit.avatar}
+                    content={devit.content}
+                    id={devit.id}
+                    createdAt={devit.createdAt}
+                    img={devit.img} />
+            }
+        </Layout>
     );
 }
 

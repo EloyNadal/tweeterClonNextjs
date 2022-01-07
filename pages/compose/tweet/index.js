@@ -1,10 +1,10 @@
 import Avatar from 'components/Avatar';
 import Button from 'components/Buttton'
-import Nav from 'components/Nav';
+import Layout from 'components/Layout';
 import useUser from 'hooks/useUser';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { addDevit, uploadImage } from 'services/firebase/client';
 import styles from 'styles/pages/ComposeTweet.module.css'
 
@@ -77,15 +77,13 @@ export default function ComposeTweet() {
     const styleTextArea = drag === DRAG_IMAGE_STATES.DRAG_OVER ? styles.over : styles.none;
 
     return (
-        <main>
-            <header className={styles.header}>
-                <h2>{'<-'} Volver</h2>
-            </header>
-            <section className={styles.section}>
+        <Layout>
+            <div className={styles.content}>
                 {
                     user && user.avatar && <Avatar src={user.avatar} />
                 }
-                <form onSubmit={handleSubmit}>
+
+                <form className={styles.form} onSubmit={handleSubmit}>
                     <textarea
                         className={styleTextArea}
                         placeholder='¿Qué esta pasando?'
@@ -98,17 +96,16 @@ export default function ComposeTweet() {
                     {imgURL && (
                         <section className={styles.removeimg}>
                             <button onClick={() => setImgURL(null)}>x</button>
-                            <Image src={imgURL} width={500} height={300} alt='image'/>
+                            <Image src={imgURL} width={500} height={300} alt='image' />
                         </section>
                     )}
                     <div>
                         <Button disabled={isButtonDisabled} >Devitear</Button>
                     </div>
                 </form>
-            </section>
-            <Nav />
+            </div>
+        </Layout>
 
-        </main>
     )
 
 }

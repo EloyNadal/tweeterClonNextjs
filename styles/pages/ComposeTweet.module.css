@@ -1,33 +1,17 @@
-.header {
-    position: sticky;
-    display: flex;
-    align-items: center;
-}
-
-.header {
-    top: 0;
-    border-bottom: 1px solid #eee;
-}
-
-.header h2 {
-    margin: 0;
-    margin-left: 15px;
-}
-
-.section {
+.content {
     padding-top: 10px;
     min-height: 100%;
     display: flex;
     width: 100%;
 }
 
-.section>div {
+.content>div {
     display: flex;
     align-items: flex-start;
     padding: 15px;
 }
 
-.section form {
+.form {
     padding: 10px;
     flex: auto;
 }
